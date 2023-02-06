@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  
+  <!-- partial:index.partial.html -->
+  <section class="msger">
+    <header class="msger-header">
+      <div class="msger-header-title">
+        <i></i> Team Irrelevant <i></i>
+      </div>
+    </header>
+
+
+
+    <main class="msger-chat">
+      <div class="msg left-msg">
+        <div class="msg-img" style="background-image: url(https://cdn-icons-png.flaticon.com/512/5292/5292342.png)"></div> <!--div> </div>https://image.flaticon.com/icons/svg/327/327779.svg)"></div>-->
+
+        <div class="msg-bubble">
+          <div class="msg-info">
+            <div class="msg-info-name">Chatbot</div>
+            <div class="msg-info-time">12:45</div>
+          </div>
+
+          <div class="msg-text">
+            Hi there! Go ahead and ask me anything! 😄
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <form class="msger-inputarea">
+      <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
+      <button type="submit" class="msger-send-btn">Send</button>
+    </form>
+
+  </section>
+  <!-- partial -->
+
+  
+  <!-- radio buttons -->
+<div>
+  <div class = "msger-radioinput">
+  <form>
+    <b>Topics</b><br><br>
+    <input type="radio" id="all" name="topics" value="All" checked>
+    <label for="all" style="font-size: 14px;">All</label><br>
+    <input type="radio" id="politics" name="topics" value="Politics">
+    <label for="politics" style="font-size: 14px;">Politics</label><br>
+    <input type="radio" id="environment" name="topics" value="Environment">
+    <label for="environment" style="font-size: 14px;">Environment</label><br>
+    <input type="radio" id="technology" name="topics" value="Technology">
+    <label for="technology" style="font-size: 14px;">Technology</label><br>
+    <input type="radio" id="healthcare" name="topics" value="Healthcare">
+    <label for="healthcare" style="font-size: 14px;">Healthcare</label><br>
+    <input type="radio" id="education" name="topics" value="Education">
+    <label for="education" style="font-size: 14px;">Education</label><br>
+  </form>
+  <br>
+</div>
+<form class="msger-stats">
+  <div ><button type="submit" style="background-color:transparent;border:none;cursor:pointer;color:white;padding: 5px 5px;">Statistics</button></div>
+</form>
+</div>
+
+
+
+  
+
+  <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
+  <script>
+
+    const msgerForm = get(".msger-inputarea");
+    const msgerInput = get(".msger-input");
+    const msgerChat = get(".msger-chat");
+    const msgerTopic = get (".msger-radioinput")
+    const msgerStats = get (".msger-stats")
+
+
+    // Icons made by Freepik from www.flaticon.com
+    const BOT_IMG = "https://cdn-icons-png.flaticon.com/512/5292/5292342.png";//"https://image.flaticon.com/icons/svg/327/327779.svg";
+    const PERSON_IMG = "https://cdn-icons-png.flaticon.com/512/4140/4140037.png";//"https://image.flaticon.com/icons/svg/145/145867.svg";
+    const BOT_NAME = "    ChatBot";
+    const PERSON_NAME = "You";
+
+    msgerForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const msgText = msgerInput.value;
+      if (!msgText) return;
+
+      var ele = document.getElementsByName('topics');
+
+      for(i = 0; i < ele.length; i++) {
+                if(ele[i].checked)
+                topicSelected = ele[i].value;
+            }
+      
+      const is_url_false = new Boolean(false)
+      appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText, is_url_false);
+      msgerInput.value = "";
+      botResponse(msgText,topicSelected);
+    });
+
+    msgerStats.addEventListener("submit", event => {
+      event.preventDefault();
+
+      console.log("inside button addEventListener")
+
+      botStats();
+
+      // console.log(date_and_time)
+
+
+
+      
+    });
+
+    function openStatsWindow(date_and_time){
+      // window.open("static/stats.html" + '?x=' + new Date().getTime(), '_blank');
+      var childWindow = window.open("static/stats.html" + '?id=' + date_and_time, '_blank');
+      childWindow.location.reload(true);
+    }
+
+    function appendMessage(name, img, side, text, is_url) {
+      console.log("inside appendMessage")
+      console.log(is_url)
+
+      if(is_url === true){
+        text = text.replace('URL:', '');
+      }
+      //   Simple solution for small apps
+      const msgHTMLurl = `
+<div class="msg ${side}-msg">
+  <div class="msg-img" style="background-image: url(${img})"></div>
+
+  <div class="msg-bubble">
+    <div class="msg-info">
+      <div class="msg-info-name">${name}</div>
+      <div class="msg-info-time">${formatDate(new Date())}</div>
+    </div>
+
+    <div class="msg-text">
+      <a href="${text}" target="_blank">${text}</a>
+    </div>
+  </div>
+</div>
+`;
+
+        const msgHTML = `
+<div class="msg ${side}-msg">
+  <div class="msg-img" style="background-image: url(${img})"></div>
+
+  <div class="msg-bubble">
+    <div class="msg-info">
+      <div class="msg-info-name">${name}</div>
+      <div class="msg-info-time">${formatDate(new Date())}</div>
+    </div>
+
+    <div class="msg-text">
+      ${text}
+    </div>
+  </div>
+</div>
+`;
+      if(is_url === true){
+        msgerChat.insertAdjacentHTML("beforeend", msgHTMLurl);
+      }
+      else{
+        msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+      }
+      //msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+      msgerChat.scrollTop += 500;
+    }
+
+    function botResponse(rawText, topic) {
+
+      // Bot Response
+      $.get("/get", { msg: rawText, topic_selected: topic }).done(function (data) {
+        console.log(rawText);
+        console.log(data);
+        console.log(topic);
+
+        const msgText = data;
+        let is_url = new Boolean(false);
+        const substring = "URL:"
+        console.log(data.includes(substring));
+        if (data.includes(substring)){
+          is_url = true
+        }
+        appendMessage(BOT_NAME, BOT_IMG, "left", msgText, is_url);
+
+      });
+
+    }
+
+    function botStats() {
+
+      // botStats
+      const myData = $.get("/stats").done(function (data) {
+        console.log(data);
+
+        const date_and_time = data
+
+        openStatsWindow(date_and_time);
+        
+      });
+
+
+    }
+
+    
+    // Utils
+    function get(selector, root = document) {
+      return root.querySelector(selector);
+    }
+
+    function formatDate(date) {
+      const h = "0" + date.getHours();
+      const m = "0" + date.getMinutes();
+
+      return `${h.slice(-2)}:${m.slice(-2)}`;
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>
